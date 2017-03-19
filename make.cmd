@@ -25,7 +25,7 @@
     set "csc=%csc% /r:%~dp0System.Data.SQLite.dll"
     <nul set /p "=-- Building . . . "
     if not exist "%out%" md "%out%"
-    2>nul %csc%
+    2>nul %csc% >nul
     call:getlasterror
     <nul set /p "=-- Copying dependencies . . . "
     pushd "%out%"
