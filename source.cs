@@ -209,16 +209,23 @@ namespace SqliteTester {
     }
 
     private void JustShowTable() {
-      using (sqlcon = new SQLiteConnection("Data Source=" + db + ";Version=3;")) {
-        using (sqlcmd = new SQLiteCommand("SELECT * FROM dummy;", sqlcon)) {
-          sqlcon.Open();
-          using (sqldbr = sqlcmd.ExecuteReader()) {
-            DataTable dt = new DataTable();
-            dt.Locale = CultureInfo.InvariantCulture;
-            dt.Load(sqldbr);
-            dgvData.DataSource = dt;
-          }
-        }
+      try {
+        sqlcon = new SQLiteConnection("Data Source=" + db + ";Version=3;");
+        sqlcmd = new SQLiteCommand("SELECT * FROM dummy;", sqlcon);
+        
+        sqlcon.Open();
+        sqldbr = sqlcmd.ExecuteReader();
+        
+        DataTable dt = new DataTable();
+        dt.Locale = CultureInfo.InvariantCulture;
+        dt.Load(sqldbr);
+        dgvData.DataSource = dt;
+      }
+      catch (SQLiteException se) { ShowErrMessage(se.Message); }
+      finally {
+        if (null != sqldbr) sqldbr.Dispose();
+        if (null != sqlcmd) sqlcmd.Dispose();
+        if (null != sqlcon) sqlcon.Dispose();
       }
     }
   } // frmMain
